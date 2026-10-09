@@ -233,3 +233,22 @@ C'est le fichier **critique** que Jellyfin lit pour découvrir le plugin. Il doi
 ```Code écrit localement       │       ▼Push sur GitHub (dépôt public)       │       ▼Créer une GitHub Release (tag v1.0.0)       │       ▼GitHub Actions se déclenche  ├── Build le .dll  ├── L'attache à la Release  ├── Génère manifest.json  └── Déploie sur GitHub Pages       │       ▼manifest.json accessible publiquement       │       ▼Utilisateurs ajoutent l'URL dans Jellyfin → Catalog → Install```
 ## Fichiers à avoir dans le dépôt au final
 ```jellyfin-plugin-cjk-name-fixer/|-- .github/|   `-- workflows/|       `-- build-and-publish.yml|-- src/|   |-- Jellyfin.Plugin.CjkNameFixer/|   |   |-- Jellyfin.Plugin.CjkNameFixer.csproj|   |   |-- Plugin.cs|   |   |-- PluginConfiguration.cs|   |   |-- PluginServiceRegistrator.cs|   |   |-- CjkDetector.cs|   |   |-- TmdbNameResolver.cs|   |   |-- PersonNameFixer.cs|   |   |-- ScheduledTasks/|   |   |   `-- FixCjkNamesTask.cs|   |   `-- PostScanTasks/|   |       `-- CjkPostScanFixer.cs|   `-- Jellyfin.Plugin.CjkNameFixer.sln|-- manifest.json|-- README.md|-- LICENSE`-- .gitignore```   
+
+
+## Instance Jellyfin de test (Docker)
+
+Le fichier `compose.yaml` démarre une instance isolée de Jellyfin 10.11.11 pour le développement et les essais d’intégration du plugin. Elle n’accède à aucun dossier média de l’hôte.
+
+- Interface : <http://127.0.0.1:18096>
+- Configuration et cache : volumes Docker `cjk-name-fixer-jellyfin-config` et `cjk-name-fixer-jellyfin-cache`
+- Le port est lié à `127.0.0.1` uniquement.
+
+Au premier démarrage, ouvre l’interface et crée un compte administrateur de test. Commandes depuis ce dossier :
+
+```sh
+sudo docker compose up -d
+sudo docker compose logs -f jellyfin-test
+sudo docker compose down
+```
+
+`down` arrête et supprime le conteneur; les deux volumes de données sont conservés.

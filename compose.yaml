@@ -1,0 +1,17 @@
+services:
+  jellyfin-test:
+    image: jellyfin/jellyfin:10.11.11
+    container_name: cjk-name-fixer-jellyfin-test
+    init: true
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18096:8096/tcp"
+    volumes:
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
+
+volumes:
+  jellyfin-config:
+    name: cjk-name-fixer-jellyfin-config
+  jellyfin-cache:
+    name: cjk-name-fixer-jellyfin-cache
