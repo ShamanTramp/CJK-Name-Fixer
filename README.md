@@ -40,9 +40,6 @@ Dans **Tableau de bord → Plugins → CJK Name Fixer**, configure les options s
 
 Pour analyser les médias déjà présents, lance **Fix CJK Person Names** depuis **Tableau de bord → Tâches planifiées**.
 
-
-Les tests couvrent notamment la détection des caractères CJK, la résolution et la mise en cache des noms TMDb, ainsi que le traitement des personnes. Le fichier `compose.yaml` permet de démarrer une instance Jellyfin locale pour les essais d’intégration.
-
 ## Licence
 
 GPL-3.0-only. Voir [LICENSE](LICENSE).
