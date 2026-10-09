@@ -1,0 +1,18 @@
+{
+  "guid": "5c5ef51d-389c-4df6-a849-aa1c573454d1",
+  "name": "CJK Name Fixer",
+  "description": "Romanizes CJK person names in Jellyfin using TMDb.",
+  "overview": "Finds CJK person names in the library and replaces them with the corresponding Latin names from TMDb.",
+  "owner": "ShamanTramp",
+  "category": "Metadata",
+  "versions": [
+    {
+      "version": "0.1.0.0",
+      "changelog": "See the GitHub release notes.",
+      "targetAbi": "10.11.11.0",
+      "sourceUrl": "https://github.com/ShamanTramp/CJK-Name-Fixer/releases/download/v0.1.0.0/cjk-name-fixer-0.1.0.0.zip",
+      "checksum": "4fbe6a99a32be4fd8603f606b71f7e6c",
+      "timestamp": "2026-10-09T20:58:51Z"
+    }
+  ]
+}
