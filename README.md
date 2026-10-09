@@ -40,22 +40,6 @@ Dans **Tableau de bord → Plugins → CJK Name Fixer**, configure les options s
 
 Pour analyser les médias déjà présents, lance **Fix CJK Person Names** depuis **Tableau de bord → Tâches planifiées**.
 
-## Compatibilité
-
-- Jellyfin Server **10.11.11** (ABI du plugin : `10.11.11.0`)
-- .NET **9**
-
-La compatibilité publiée vise Jellyfin 10.11.11. La prise en charge d’autres versions de Jellyfin n’est pas garantie.
-
-## Développement
-
-Prérequis : le SDK .NET 9 et Docker avec Compose si une instance locale de Jellyfin est nécessaire.
-
-```sh
-dotnet restore Jellyfin.Plugin.CjkNameFixer.sln
-dotnet build Jellyfin.Plugin.CjkNameFixer.sln -c Release
-dotnet test Jellyfin.Plugin.CjkNameFixer.sln -c Release
-```
 
 Les tests couvrent notamment la détection des caractères CJK, la résolution et la mise en cache des noms TMDb, ainsi que le traitement des personnes. Le fichier `compose.yaml` permet de démarrer une instance Jellyfin locale pour les essais d’intégration.
 
