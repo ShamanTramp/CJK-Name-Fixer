@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.CjkNameFixer.Core", "src\Jellyfin.Plugin.CjkNameFixer.Core\Jellyfin.Plugin.CjkNameFixer.Core.csproj", "{EB934BE0-AB62-4F24-9D6A-96F657B6F042}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.CjkNameFixer", "src\Jellyfin.Plugin.CjkNameFixer\Jellyfin.Plugin.CjkNameFixer.csproj", "{7E2A3732-2D00-4D03-9B90-B4E6F7FE50A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.CjkNameFixer.Tests", "src\Jellyfin.Plugin.CjkNameFixer.Tests\Jellyfin.Plugin.CjkNameFixer.Tests.csproj", "{789C14A9-8683-42BD-AB3F-3E4D42DC0383}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB934BE0-AB62-4F24-9D6A-96F657B6F042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB934BE0-AB62-4F24-9D6A-96F657B6F042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB934BE0-AB62-4F24-9D6A-96F657B6F042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB934BE0-AB62-4F24-9D6A-96F657B6F042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E2A3732-2D00-4D03-9B90-B4E6F7FE50A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E2A3732-2D00-4D03-9B90-B4E6F7FE50A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E2A3732-2D00-4D03-9B90-B4E6F7FE50A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E2A3732-2D00-4D03-9B90-B4E6F7FE50A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{789C14A9-8683-42BD-AB3F-3E4D42DC0383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789C14A9-8683-42BD-AB3F-3E4D42DC0383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789C14A9-8683-42BD-AB3F-3E4D42DC0383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789C14A9-8683-42BD-AB3F-3E4D42DC0383}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

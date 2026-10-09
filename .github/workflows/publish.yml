@@ -1,0 +1,109 @@
+name: Publish plugin release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore, build, and test
+        run: |
+          dotnet restore Jellyfin.Plugin.CjkNameFixer.sln
+          dotnet build Jellyfin.Plugin.CjkNameFixer.sln -c Release --no-restore -m:1
+          dotnet test Jellyfin.Plugin.CjkNameFixer.sln -c Release --no-build --no-restore -m:1
+
+      - name: Check release tag matches plugin version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+
+          project = ET.parse("src/Jellyfin.Plugin.CjkNameFixer/Jellyfin.Plugin.CjkNameFixer.csproj")
+          version = project.findtext(".//Version")
+          tag_version = os.environ["TAG"].removeprefix("v")
+          if tag_version != version:
+              raise SystemExit(f"Release tag {tag_version} does not match project version {version}")
+          PY
+
+      - name: Publish plugin files
+        run: >-
+          dotnet publish src/Jellyfin.Plugin.CjkNameFixer/Jellyfin.Plugin.CjkNameFixer.csproj
+          -c Release --no-build --no-restore -o ./publish
+
+      - name: Package plugin and calculate checksum
+        id: package
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          archive="cjk-name-fixer-${TAG#v}.zip"
+          (cd publish && zip -q -r "../$archive" .)
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+          echo "checksum=$(md5sum "$archive" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" "${{ steps.package.outputs.archive }}" --clobber
+
+      - name: Update plugin repository manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          CHECKSUM: ${{ steps.package.outputs.checksum }}
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          tag = os.environ["TAG"]
+          version = tag.removeprefix("v")
+          archive = os.environ["ARCHIVE"]
+          manifest_path = Path("manifest.json")
+          manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {
+              "guid": "5c5ef51d-389c-4df6-a849-aa1c573454d1",
+              "name": "CJK Name Fixer",
+              "description": "Romanizes CJK person names in Jellyfin using TMDb.",
+              "overview": "Finds CJK person names in the library and replaces them with the corresponding Latin names from TMDb.",
+              "owner": "ShamanTramp",
+              "category": "Metadata",
+              "versions": [],
+          }
+          manifest["versions"] = [entry for entry in manifest["versions"] if entry["version"] != version]
+          manifest["versions"].insert(0, {
+              "version": version,
+              "changelog": "See the GitHub release notes.",
+              "targetAbi": "10.11.11.0",
+              "sourceUrl": f"https://github.com/ShamanTramp/CJK-Name-Fixer/releases/download/{tag}/{archive}",
+              "checksum": os.environ["CHECKSUM"],
+              "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+          })
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "chore: update plugin manifest for ${TAG}"
+          git push origin main

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>CJK Name Fixer</title>
+</head>
+<body>
+    <div id="CjkNameFixerConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="CjkNameFixerConfigForm">
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableNewMediaFix" name="EnableNewMediaFix" type="checkbox" is="emby-checkbox" />
+                            <span>Vérifier les noms lors de l’ajout d’un nouveau film ou épisode</span>
+                        </label>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ThrottleMs">Délai entre les requêtes TMDb (ms)</label>
+                        <input id="ThrottleMs" name="ThrottleMs" type="number" is="emby-input" min="0" max="60000" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="TmdbApiKeyOverride">Clé API TMDb v3 personnelle (facultative)</label>
+                        <input id="TmdbApiKeyOverride" name="TmdbApiKeyOverride" type="password" autocomplete="new-password" is="emby-input" />
+                        <div class="fieldDescription">Vide : réutilise le fournisseur TMDb de Jellyfin. Renseignée : utilise directement cette clé avec son quota TMDb propre.</div>
+                    </div>
+                    <div class="fieldDescription">Les réponses sont mises en cache 12 heures et le délai limite le rythme des requêtes dans les deux modes.</div>
+                    <div class="fieldDescription">Pour traiter les médias déjà présents, lance la tâche « Fix CJK Person Names » dans Tableau de bord &gt; Tâches planifiées. Elle ne se déclenche jamais automatiquement.</div>
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Enregistrer</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            const CjkNameFixerConfig = { pluginUniqueId: '5c5ef51d-389c-4df6-a849-aa1c573454d1' };
+            document.querySelector('#CjkNameFixerConfigPage').addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(CjkNameFixerConfig.pluginUniqueId).then(function (config) {
+                    document.querySelector('#EnableNewMediaFix').checked = config.EnableNewMediaFix;
+                    document.querySelector('#ThrottleMs').value = config.ThrottleMs;
+                    document.querySelector('#TmdbApiKeyOverride').value = config.TmdbApiKeyOverride || '';
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+            document.querySelector('#CjkNameFixerConfigForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(CjkNameFixerConfig.pluginUniqueId).then(function (config) {
+                    config.EnableNewMediaFix = document.querySelector('#EnableNewMediaFix').checked;
+                    config.ThrottleMs = Number(document.querySelector('#ThrottleMs').value);
+                    config.TmdbApiKeyOverride = document.querySelector('#TmdbApiKeyOverride').value;
+                    ApiClient.updatePluginConfiguration(CjkNameFixerConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    });
+                });
+                return false;
+            });
+        </script>
+    </div>
+</body>
+</html>
