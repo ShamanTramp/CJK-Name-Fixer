@@ -8,6 +8,14 @@
     "category": "Metadata",
     "versions": [
       {
+        "version": "0.1.1.0",
+        "changelog": "See the GitHub release notes.",
+        "targetAbi": "10.11.11.0",
+        "sourceUrl": "https://github.com/ShamanTramp/CJK-Name-Fixer/releases/download/v0.1.1.0/cjk-name-fixer-0.1.1.0.zip",
+        "checksum": "3cad8bc70db68fad22a25305aca2f36b",
+        "timestamp": "2026-10-09T22:05:13Z"
+      },
+      {
         "version": "0.1.0.0",
         "changelog": "See the GitHub release notes.",
         "targetAbi": "10.11.11.0",
