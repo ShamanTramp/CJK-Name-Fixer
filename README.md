@@ -9,6 +9,7 @@
 - Lance une analyse des fiches de personnes existantes depuis les tâches planifiées de Jellyfin.
 - Peut traiter les personnes liées à un nouveau film, épisode ou élément de série lorsqu’il est ajouté à la bibliothèque.
 - Ne modifie un nom que si une correspondance TMDb est disponible et que le champ n’est pas verrouillé.
+- Met à jour les crédits des médias associés en même temps que le nom pour conserver les liens vers la fiche Person.
 - Met en cache les résultats TMDb, y compris les recherches sans correspondance, pendant 12 heures.
 - Réutilise par défaut le client TMDb de Jellyfin. Une clé API TMDb personnelle peut être configurée pour utiliser son propre quota.
 - Permet de régler le délai entre les requêtes TMDb afin de limiter leur fréquence.
