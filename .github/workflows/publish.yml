@@ -94,6 +94,7 @@ jobs:
                   "overview": "Finds CJK person names in the library and replaces them with the corresponding Latin names from TMDb.",
                   "owner": "ShamanTramp",
                   "category": "Metadata",
+                  "imageUrl": "https://raw.githubusercontent.com/ShamanTramp/CJK-Name-Fixer/main/assets/cjk-name-fixer-cover.png",
                   "versions": [],
               }
               manifest.append(plugin)

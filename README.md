@@ -2,6 +2,8 @@
 
 Plugin Jellyfin qui remplace à la demande les noms de personnes écrits en caractères chinois, japonais ou coréens par leur nom latin fourni par TMDb.
 
+![Cover CJK Name Fixer](assets/cjk-name-fixer-cover.png)
+
 ## Fonctionnement
 
 - La tâche **Fix CJK Person Names** analyse les fiches Person de la bibliothèque lorsqu’elle est lancée manuellement.
