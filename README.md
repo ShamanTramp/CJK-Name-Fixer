@@ -1,47 +1,54 @@
 # CJK Name Fixer
 
-Plugin Jellyfin qui remplace à la demande les noms de personnes écrits en caractères chinois, japonais ou coréens par leur nom latin fourni par TMDb.
+![Illustration de CJK Name Fixer](assets/cjk-name-fixer-cover.png)
 
-![Cover CJK Name Fixer](assets/cjk-name-fixer-cover.png)
+**CJK Name Fixer** est un plugin Jellyfin qui remplace les noms de personnes écrits en caractères chinois, japonais ou coréens par leur nom latin correspondant sur TMDb. Il est conçu pour corriger les noms d’acteurs et d’autres personnes associés aux médias de la bibliothèque.
 
-## Fonctionnement
+## Fonctionnalités
 
-- La tâche **Fix CJK Person Names** analyse les fiches Person de la bibliothèque lorsqu’elle est lancée manuellement.
-- Le traitement des nouveaux médias peut être activé dans les paramètres. Il ne vérifie que les personnes liées au média ajouté; aucun scan périodique ou déclenchement après un scan de bibliothèque n’est configuré.
-- Un nom est modifié uniquement si la fiche a un identifiant TMDb, si le nom correspondant est trouvé et si le champ n’est pas verrouillé.
-- Les réponses TMDb positives et négatives sont mises en cache 12 heures. Le délai entre les requêtes est configurable.
-- Par défaut, le plugin réutilise le client TMDb de Jellyfin. Une clé TMDb personnelle peut être fournie pour utiliser son propre quota.
-- Les modifications sont enregistrées directement. Il n’y a pas de case « mode simulation » dans les paramètres.
+- Lance une analyse des fiches de personnes existantes depuis les tâches planifiées de Jellyfin.
+- Peut traiter les personnes liées à un nouveau film, épisode ou élément de série lorsqu’il est ajouté à la bibliothèque.
+- Ne modifie un nom que si une correspondance TMDb est disponible et que le champ n’est pas verrouillé.
+- Met en cache les résultats TMDb, y compris les recherches sans correspondance, pendant 12 heures.
+- Réutilise par défaut le client TMDb de Jellyfin. Une clé API TMDb personnelle peut être configurée pour utiliser son propre quota.
+- Permet de régler le délai entre les requêtes TMDb afin de limiter leur fréquence.
 
-## Installation depuis le dépôt du plugin
+Le plugin ne lance pas de vérification périodique. L’analyse d’une bibliothèque existante est déclenchée manuellement; le traitement des nouveaux médias est activé par défaut et peut être désactivé dans les paramètres.
 
-Dans Jellyfin, ouvre **Tableau de bord → Plugins → Dépôts**, ajoute ce dépôt :
+## Installation
 
-`https://raw.githubusercontent.com/ShamanTramp/CJK-Name-Fixer/main/manifest.json`
+Dans Jellyfin, ouvre **Tableau de bord → Plugins → Dépôts**, puis ajoute le manifeste du dépôt :
 
-Enregistre, ouvre le catalogue, installe **CJK Name Fixer**, puis redémarre Jellyfin. La première version sera disponible une fois la release GitHub publiée et le manifeste généré par l’action de publication.
+```text
+https://raw.githubusercontent.com/ShamanTramp/CJK-Name-Fixer/main/manifest.json
+```
 
-Les versions peuvent aussi être téléchargées depuis [GitHub Releases](https://github.com/ShamanTramp/CJK-Name-Fixer/releases). L’archive contient les fichiers du plugin; l’instance Jellyfin Docker de développement n’est jamais incluse dans cette archive.
+Enregistre le dépôt, ouvre le catalogue des plugins, sélectionne **Disponible** si nécessaire, puis installe **CJK Name Fixer**. Redémarre Jellyfin lorsque l’installation est terminée. Le plugin peut aussi être téléchargé depuis [GitHub Releases](https://github.com/ShamanTramp/CJK-Name-Fixer/releases).
 
-## Paramètres
+Pour mettre à jour le dépôt, Jellyfin doit pouvoir accéder au manifeste et aux fichiers de release sur GitHub.
 
-| Paramètre | Défaut | Description |
+## Configuration et utilisation
+
+Dans **Tableau de bord → Plugins → CJK Name Fixer**, configure les options suivantes :
+
+| Option | Valeur par défaut | Description |
 | --- | --- | --- |
-| Vérifier les noms à l’ajout | Activé | Vérifie les personnes liées aux nouveaux films et épisodes. |
-| Délai entre les requêtes TMDb | 500 ms | Ralentit les appels au fournisseur pour limiter les requêtes. |
-| Clé API TMDb personnelle | Vide | Facultative; vide, le plugin utilise le client TMDb de Jellyfin. |
+| Vérifier les noms à l’ajout | Activée | Traite les personnes associées aux nouveaux médias pris en charge. |
+| Délai entre les requêtes TMDb | 500 ms | Définit le délai minimal entre les requêtes TMDb. |
+| Clé API TMDb personnelle | Vide | Facultative. Si elle est renseignée, elle est utilisée à la place du client TMDb de Jellyfin. |
 
-Pour traiter les médias déjà présents, lance manuellement **Fix CJK Person Names** depuis **Tableau de bord → Tâches planifiées**.
+Pour analyser les médias déjà présents, lance **Fix CJK Person Names** depuis **Tableau de bord → Tâches planifiées**.
 
 ## Compatibilité
 
-- Jellyfin Server **10.11.11**
+- Jellyfin Server **10.11.11** (ABI du plugin : `10.11.11.0`)
 - .NET **9**
-- Linux, Windows et macOS pris en charge par Jellyfin
 
-Le premier build est ciblé sur Jellyfin 10.11.11. La compatibilité avec d’autres versions n’est pas encore annoncée.
+La compatibilité publiée vise Jellyfin 10.11.11. La prise en charge d’autres versions de Jellyfin n’est pas garantie.
 
-## Construire et tester
+## Développement
+
+Prérequis : le SDK .NET 9 et Docker avec Compose si une instance locale de Jellyfin est nécessaire.
 
 ```sh
 dotnet restore Jellyfin.Plugin.CjkNameFixer.sln
@@ -49,7 +56,7 @@ dotnet build Jellyfin.Plugin.CjkNameFixer.sln -c Release
 dotnet test Jellyfin.Plugin.CjkNameFixer.sln -c Release
 ```
 
-Les tests unitaires couvrent la détection Unicode, le cache TMDb et l’orchestration avec des dépendances simulées. Le dépôt contient aussi un `compose.yaml` pour une instance Jellyfin locale de test; ce conteneur sert au développement et n’est pas distribué avec le plugin.
+Les tests couvrent notamment la détection des caractères CJK, la résolution et la mise en cache des noms TMDb, ainsi que le traitement des personnes. Le fichier `compose.yaml` permet de démarrer une instance Jellyfin locale pour les essais d’intégration.
 
 ## Licence
 
