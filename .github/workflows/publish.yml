@@ -82,17 +82,23 @@ jobs:
           version = tag.removeprefix("v")
           archive = os.environ["ARCHIVE"]
           manifest_path = Path("manifest.json")
-          manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {
-              "guid": "5c5ef51d-389c-4df6-a849-aa1c573454d1",
-              "name": "CJK Name Fixer",
-              "description": "Romanizes CJK person names in Jellyfin using TMDb.",
-              "overview": "Finds CJK person names in the library and replaces them with the corresponding Latin names from TMDb.",
-              "owner": "ShamanTramp",
-              "category": "Metadata",
-              "versions": [],
-          }
-          manifest["versions"] = [entry for entry in manifest["versions"] if entry["version"] != version]
-          manifest["versions"].insert(0, {
+          manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
+          if isinstance(manifest, dict):
+              manifest = [manifest]
+          plugin = next((entry for entry in manifest if entry.get("guid") == "5c5ef51d-389c-4df6-a849-aa1c573454d1"), None)
+          if plugin is None:
+              plugin = {
+                  "guid": "5c5ef51d-389c-4df6-a849-aa1c573454d1",
+                  "name": "CJK Name Fixer",
+                  "description": "Romanizes CJK person names in Jellyfin using TMDb.",
+                  "overview": "Finds CJK person names in the library and replaces them with the corresponding Latin names from TMDb.",
+                  "owner": "ShamanTramp",
+                  "category": "Metadata",
+                  "versions": [],
+              }
+              manifest.append(plugin)
+          plugin["versions"] = [entry for entry in plugin["versions"] if entry["version"] != version]
+          plugin["versions"].insert(0, {
               "version": version,
               "changelog": "See the GitHub release notes.",
               "targetAbi": "10.11.11.0",
