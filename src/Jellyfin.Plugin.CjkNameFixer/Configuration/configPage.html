@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="utf-8">
     <title>CJK Name Fixer</title>
@@ -12,28 +12,55 @@
                     <div class="checkboxContainer checkboxContainer-withDescription">
                         <label class="emby-checkbox-label">
                             <input id="EnableNewMediaFix" name="EnableNewMediaFix" type="checkbox" is="emby-checkbox" />
-                            <span>Vérifier les noms lors de l’ajout d’un nouveau film ou épisode</span>
+                            <span data-i18n="checkNamesOnAdd"></span>
                         </label>
                     </div>
                     <div class="inputContainer">
-                        <label class="inputLabel inputLabelUnfocused" for="ThrottleMs">Délai entre les requêtes TMDb (ms)</label>
+                        <label class="inputLabel inputLabelUnfocused" for="ThrottleMs" data-i18n="throttleLabel"></label>
                         <input id="ThrottleMs" name="ThrottleMs" type="number" is="emby-input" min="0" max="60000" />
                     </div>
                     <div class="inputContainer">
-                        <label class="inputLabel inputLabelUnfocused" for="TmdbApiKeyOverride">Clé API TMDb v3 personnelle (facultative)</label>
+                        <label class="inputLabel inputLabelUnfocused" for="TmdbApiKeyOverride" data-i18n="apiKeyLabel"></label>
                         <input id="TmdbApiKeyOverride" name="TmdbApiKeyOverride" type="password" autocomplete="new-password" is="emby-input" />
-                        <div class="fieldDescription">Vide : réutilise le fournisseur TMDb de Jellyfin. Renseignée : utilise directement cette clé avec son quota TMDb propre.</div>
+                        <div class="fieldDescription" data-i18n="apiKeyDescription"></div>
                     </div>
-                    <div class="fieldDescription">Les réponses sont mises en cache 12 heures et le délai limite le rythme des requêtes dans les deux modes.</div>
-                    <div class="fieldDescription">Pour traiter les médias déjà présents, lance la tâche « Fix CJK Person Names » dans Tableau de bord &gt; Tâches planifiées. Elle ne se déclenche jamais automatiquement.</div>
+                    <div class="fieldDescription" data-i18n="cacheDescription"></div>
+                    <div class="fieldDescription" data-i18n="manualScanDescription"></div>
                     <div>
-                        <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Enregistrer</span></button>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span data-i18n="save"></span></button>
                     </div>
                 </form>
             </div>
         </div>
         <script type="text/javascript">
             const CjkNameFixerConfig = { pluginUniqueId: '5c5ef51d-389c-4df6-a849-aa1c573454d1' };
+            const CjkNameFixerTranslations = {
+                en: {
+                    checkNamesOnAdd: 'Check names when a new movie or episode is added',
+                    throttleLabel: 'Delay between TMDb requests (ms)',
+                    apiKeyLabel: 'Personal TMDb v3 API key (optional)',
+                    apiKeyDescription: 'Empty: reuse Jellyfin’s TMDb provider. Set: use this key directly with its own TMDb quota.',
+                    cacheDescription: 'Responses are cached for 12 hours. The delay limits the request rate in both modes.',
+                    manualScanDescription: 'To process existing media, run “Fix CJK Person Names” from Dashboard > Scheduled Tasks. It never runs automatically.',
+                    save: 'Save'
+                },
+                fr: {
+                    checkNamesOnAdd: 'Vérifier les noms lors de l’ajout d’un nouveau film ou épisode',
+                    throttleLabel: 'Délai entre les requêtes TMDb (ms)',
+                    apiKeyLabel: 'Clé API TMDb v3 personnelle (facultative)',
+                    apiKeyDescription: 'Vide : réutilise le fournisseur TMDb de Jellyfin. Renseignée : utilise directement cette clé avec son quota TMDb propre.',
+                    cacheDescription: 'Les réponses sont mises en cache 12 heures et le délai limite le rythme des requêtes dans les deux modes.',
+                    manualScanDescription: 'Pour traiter les médias déjà présents, lance la tâche « Fix CJK Person Names » dans Tableau de bord > Tâches planifiées. Elle ne se déclenche jamais automatiquement.',
+                    save: 'Enregistrer'
+                }
+            };
+            const CjkNameFixerLanguage = (document.documentElement.lang || navigator.language || 'en').toLowerCase();
+            const CjkNameFixerLocale = CjkNameFixerLanguage.startsWith('fr') ? 'fr' : 'en';
+            document.querySelectorAll('#CjkNameFixerConfigPage [data-i18n]').forEach(function (element) {
+                const key = element.getAttribute('data-i18n');
+                element.textContent = CjkNameFixerTranslations[CjkNameFixerLocale][key] || CjkNameFixerTranslations.en[key] || key;
+            });
+
             document.querySelector('#CjkNameFixerConfigPage').addEventListener('pageshow', function () {
                 Dashboard.showLoadingMsg();
                 ApiClient.getPluginConfiguration(CjkNameFixerConfig.pluginUniqueId).then(function (config) {
